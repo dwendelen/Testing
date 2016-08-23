@@ -15,12 +15,12 @@ import java.util.List;
  * Do not use with @RunWith(...)
  */
 public class PropertySourceRunner extends BlockJUnit4ClassRunner {
-    private ResourcePropertySource propertySource;
+    private List<ResourcePropertySource> propertySources;
     private String propertySourceName;
 
-    public PropertySourceRunner(Class<?> klass, ResourcePropertySource propertySource, String propertySourceName) throws InitializationError {
+    public PropertySourceRunner(Class<?> klass, List<ResourcePropertySource> propertySources, String propertySourceName) throws InitializationError {
         super(klass);
-        this.propertySource = propertySource;
+        this.propertySources = propertySources;
         this.propertySourceName = propertySourceName;
     }
 
@@ -55,11 +55,17 @@ public class PropertySourceRunner extends BlockJUnit4ClassRunner {
             }
 
             String key = annotation.value();
-            if (!propertySource.containsProperty(key)) {
-                return new FailStatement("Key " + key + " not found");
+            boolean found = false;
+            for (ResourcePropertySource propertySource : propertySources) {
+                if (propertySource.containsProperty(key)) {
+                    parameterInstances[i] = propertySource.getProperty(key);
+                    found = true;
+                }
             }
 
-            parameterInstances[i] = propertySource.getProperty(key);
+            if (!found) {
+                return new FailStatement("Key " + key + " not found");
+            }
         }
 
         return new Statement() {
