@@ -25,4 +25,8 @@ public class ControllableExecutor implements Executor {
             runnable.run();
         }
     }
+
+    public int getNbOfPendingTasks() {
+        return queue.size();
+    }
 }
