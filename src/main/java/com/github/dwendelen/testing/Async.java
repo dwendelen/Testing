@@ -39,7 +39,11 @@ public class Async {
     public static <T> ScheduledFuture<T> newImmediateFailedScheduledFuture(Exception e) {
         return new ImmediateFailedFuture<T>(e);
     }
-    
+
+    public static ControllableExecutor newControllableExecutor() {
+        return new ControllableExecutor();
+    }
+
     private static class DirectAsyncTaskExecutor implements AsyncTaskExecutor {
         @Override
         public void execute(Runnable task, long startTimeout) {
