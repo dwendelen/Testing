@@ -19,4 +19,10 @@ public class ControllableExecutor implements Executor {
         }
         runnable.run();
     }
+
+    public void runAllTask() {
+        for (Runnable runnable : queue) {
+            runnable.run();
+        }
+    }
 }
