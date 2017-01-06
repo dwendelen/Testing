@@ -6,7 +6,7 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 group 'com.github.dwendelen'
-version '7'
+version '8'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -21,10 +21,18 @@ dependencies {
     compileOnly "org.springframework:spring-context:4.1.6.RELEASE"
 }
 
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+}
+
 publishing {
     publications {
         plugin(MavenPublication) {
             from components.java
+
+            artifact sourcesJar {
+                classifier "sources"
+            }
         }
     }
     repositories {
@@ -34,4 +42,3 @@ publishing {
         }
     }
 }
-
