@@ -1,0 +1,2 @@
+- Decide what to do with signatures (used in generics)
+- Allow chaining of analysers with other visitors

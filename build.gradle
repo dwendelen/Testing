@@ -8,8 +8,8 @@ apply plugin: 'maven-publish'
 group 'com.github.dwendelen'
 version '8'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     mavenLocal()
@@ -17,6 +17,9 @@ repositories {
 }
 
 dependencies {
+    compile "org.ow2.asm:asm:5.2"
+    compile "io.reactivex.rxjava2:rxjava:2.1.12"
+
     compileOnly "junit:junit:4.12"
     compileOnly "org.springframework:spring-context:4.1.6.RELEASE"
 }
