@@ -22,6 +22,11 @@ public class ComponentTest {
         return new ComponentTest();
     }
 
+    public ComponentTest scanning(Class<?> clazz) {
+        URL location = clazz.getProtectionDomain().getCodeSource().getLocation();
+        return scanning(location);
+    }
+
     public ComponentTest scanning(URL url) {
         switch (url.getProtocol()) {
             case "file":

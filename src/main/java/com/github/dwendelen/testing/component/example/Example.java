@@ -5,8 +5,6 @@ import com.github.dwendelen.testing.component.ApiConfigurer;
 import com.github.dwendelen.testing.component.ComponentConfigurer;
 import com.github.dwendelen.testing.component.ComponentTest;
 
-import java.net.URL;
-
 public class Example {
     private static final String ASYNC = "Async";
     private static final String WAIT_FOR = "WaitFor";
@@ -16,10 +14,8 @@ public class Example {
     private static final String PROPERTIES_FILE = "Properties File";
 
     public static void main(String[] args) {
-        URL myLocation = Example.class.getProtectionDomain().getCodeSource().getLocation();
-
         ComponentTest.newComponentTest()
-                .scanning(myLocation)
+                .scanning(Example.class)
                 .withRootComponent("Testing", root -> root
                         .addPackage("com.github.dwendelen.testing")
                         .subComponent(COMPONENT, comp -> comp
