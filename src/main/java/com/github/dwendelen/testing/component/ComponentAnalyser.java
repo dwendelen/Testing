@@ -13,21 +13,21 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Function;
 
-public class ComponentTest {
+public class ComponentAnalyser {
     private Analyser analyser = new Analyser();
     private ReportPrinter reportPrinter = new ReportPrinter();
     private Runnable onError = () -> {};
 
-    public static ComponentTest newComponentTest() {
-        return new ComponentTest();
+    public static ComponentAnalyser newComponentAnalyser() {
+        return new ComponentAnalyser();
     }
 
-    public ComponentTest scanning(Class<?> clazz) {
+    public ComponentAnalyser scanning(Class<?> clazz) {
         URL location = clazz.getProtectionDomain().getCodeSource().getLocation();
         return scanning(location);
     }
 
-    public ComponentTest scanning(URL url) {
+    public ComponentAnalyser scanning(URL url) {
         switch (url.getProtocol()) {
             case "file":
                 return scanning(url.getPath());
@@ -43,7 +43,7 @@ public class ComponentTest {
         }
     }
 
-    public ComponentTest scanning(String directoryOrJar) {
+    public ComponentAnalyser scanning(String directoryOrJar) {
         if (directoryOrJar.endsWith(".jar")) {
             analyser.addScanJar(directoryOrJar);
         } else {
@@ -53,7 +53,7 @@ public class ComponentTest {
         return this;
     }
 
-    public ComponentTest withRootComponent(String name, Function<ComponentConfigurer, ComponentConfigurer> configurer) {
+    public ComponentAnalyser withRootComponent(String name, Function<ComponentConfigurer, ComponentConfigurer> configurer) {
         Component rootModule = new Component(null, name);
         Implementation implementation = new Implementation(rootModule);
         Api api = new Api(rootModule);
@@ -67,13 +67,13 @@ public class ComponentTest {
         return this;
     }
 
-    public ComponentTest onError(Runnable onError) {
+    public ComponentAnalyser onError(Runnable onError) {
         this.onError = onError;
 
         return this;
     }
 
-    public void validate() {
+    public void analyse() {
         Report report = analyser.analyse();
         reportPrinter.print(report);
 

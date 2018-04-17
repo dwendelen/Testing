@@ -3,7 +3,7 @@ package com.github.dwendelen.testing.component.example;
 import com.github.dwendelen.testing.*;
 import com.github.dwendelen.testing.component.ApiConfigurer;
 import com.github.dwendelen.testing.component.ComponentConfigurer;
-import com.github.dwendelen.testing.component.ComponentTest;
+import com.github.dwendelen.testing.component.ComponentAnalyser;
 
 public class Example {
     private static final String ASYNC = "Async";
@@ -14,7 +14,7 @@ public class Example {
     private static final String PROPERTIES_FILE = "Properties File";
 
     public static void main(String[] args) {
-        ComponentTest.newComponentTest()
+        ComponentAnalyser.newComponentAnalyser()
                 .scanning(Example.class)
                 .withRootComponent("Testing", root -> root
                         .addPackage("com.github.dwendelen.testing")
@@ -23,7 +23,7 @@ public class Example {
                                 .api(api -> api
                                         .addClass(ApiConfigurer.class)
                                         .addClass(ComponentConfigurer.class)
-                                        .addClass(ComponentTest.class)
+                                        .addClass(ComponentAnalyser.class)
                                 )
                                 .subComponent("Example", example -> example
                                         .addClass(Example.class)
@@ -60,6 +60,6 @@ public class Example {
                         )
                 )
                 .onError(() -> System.exit(1))
-                .validate();
+                .analyse();
     }
 }
