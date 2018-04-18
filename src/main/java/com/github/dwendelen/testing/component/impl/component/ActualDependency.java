@@ -18,12 +18,14 @@ package com.github.dwendelen.testing.component.impl.component;
 public class ActualDependency {
     private Component from;
     private AbstractCodeContainer to;
-    private String className;
+    private String classNameFrom;
+    private String classNameTo;
 
-    public ActualDependency(Component from, AbstractCodeContainer to, String className) {
+    public ActualDependency(Component from, AbstractCodeContainer to, String classNameFrom, String classNameTo) {
         this.from = from;
         this.to = to;
-        this.className = className;
+        this.classNameFrom = classNameFrom;
+        this.classNameTo = classNameTo;
     }
 
     public Component getFrom() {
@@ -34,7 +36,11 @@ public class ActualDependency {
         return to;
     }
 
-    public String getClassName() {
-        return className;
+    public String getClassNameFrom() {
+        return classNameFrom;
+    }
+
+    public String getClassNameTo() {
+        return classNameTo;
     }
 }

@@ -20,12 +20,14 @@ import com.github.dwendelen.testing.component.impl.component.Component;
 public class UnexpectedDependency {
     private Component from;
     private Component to;
-    private String className;
+    private String classNameFrom;
+    private String classNameTo;
 
-    public UnexpectedDependency(Component from, Component to, String className) {
+    public UnexpectedDependency(Component from, Component to, String classNameFrom, String classNameTo) {
         this.from = from;
         this.to = to;
-        this.className = className;
+        this.classNameFrom = classNameFrom;
+        this.classNameTo = classNameTo;
     }
 
     public Component getFrom() {
@@ -36,7 +38,11 @@ public class UnexpectedDependency {
         return to;
     }
 
-    public String getClassName() {
-        return className;
+    public String getClassNameFrom() {
+        return classNameFrom;
+    }
+
+    public String getClassNameTo() {
+        return classNameTo;
     }
 }

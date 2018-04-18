@@ -27,6 +27,7 @@ import com.github.dwendelen.testing.component.impl.report.Report;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Function;
+import java.util.logging.Level;
 
 public class ComponentAnalyser {
     private Analyser analyser = new Analyser();
@@ -69,16 +70,34 @@ public class ComponentAnalyser {
     }
 
     public ComponentAnalyser withRootComponent(String name, Function<ComponentConfigurer, ComponentConfigurer> configurer) {
-        Component rootModule = new Component(null, name);
-        Implementation implementation = new Implementation(rootModule);
-        Api api = new Api(rootModule);
+        Component rootComponent = new Component(null, name);
+        Implementation implementation = new Implementation(rootComponent);
+        Api api = new Api(rootComponent);
 
         DefaultApiConfigurer apiConfigurer = new DefaultApiConfigurer(api, analyser.getCodeTree());
-        DefaultComponentConfigurer componentConfigurer = new DefaultComponentConfigurer(apiConfigurer, implementation, rootModule, analyser.getComponentRegistry(), analyser.getCodeTree());
+        DefaultComponentConfigurer componentConfigurer = new DefaultComponentConfigurer(apiConfigurer, implementation, rootComponent, analyser.getComponentRegistry(), analyser.getCodeTree());
+
+        analyser.getComponentRegistry().addComponent(rootComponent);
 
         configurer.apply(componentConfigurer);
         componentConfigurer.getDependencyInitialiser().run();
 
+        return this;
+    }
+
+    public ComponentAnalyser unexpectedDependencies(Level level) {
+        reportPrinter.setUnexpectedDependency(level);
+        return this;
+    }
+
+
+    public ComponentAnalyser unusedDependencies(Level level) {
+        reportPrinter.setUnusedDependency(level);
+        return this;
+    }
+
+    public ComponentAnalyser noAccess(Level level) {
+        reportPrinter.setNoAccess(level);
         return this;
     }
 

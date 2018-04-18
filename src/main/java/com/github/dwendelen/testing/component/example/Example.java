@@ -20,6 +20,8 @@ import com.github.dwendelen.testing.component.ApiConfigurer;
 import com.github.dwendelen.testing.component.ComponentConfigurer;
 import com.github.dwendelen.testing.component.ComponentAnalyser;
 
+import java.util.logging.Level;
+
 public class Example {
     private static final String ASYNC = "Async";
     private static final String WAIT_FOR = "WaitFor";
@@ -74,6 +76,9 @@ public class Example {
                                 )
                         )
                 )
+                .unexpectedDependencies(Level.SEVERE)
+                .unusedDependencies(Level.WARNING)
+                .noAccess(Level.SEVERE)
                 .onError(() -> System.exit(1))
                 .analyse();
     }

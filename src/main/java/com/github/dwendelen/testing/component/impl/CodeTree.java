@@ -27,7 +27,7 @@ public class CodeTree {
     public void setCodeContainer(List<String> codePath, AbstractCodeContainer newModule) {
         if (codePath.isEmpty()) {
             if (codeContainer != null) {
-                throw new IllegalStateException("Two containers found with the same code prefix: " + codeContainer + ", " + newModule);
+                throw new IllegalStateException("Multiple containers found with the same code prefix: " + codeContainer + ", " + newModule);
             }
             codeContainer = newModule;
             return;

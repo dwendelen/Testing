@@ -102,15 +102,17 @@ public class Analyser {
         ClassAnalyser classAnalyser = new ClassAnalyser();
         classAnalyser.analyse(inputStream);
 
-        AbstractCodeContainer codeContainer = getCodeContainer(classAnalyser.getClassName());
+        String fromInternalClass = classAnalyser.getClassName();
+        AbstractCodeContainer codeContainer = getCodeContainer(fromInternalClass);
         Component from = codeContainer.getComponent();
 
         return Observable.fromIterable(classAnalyser.getDependencies())
                 .map(toInternalClass -> {
                     AbstractCodeContainer to = getCodeContainer(toInternalClass);
+                    String fromFullyQualified = Utils.internalNameToFullyQualifiedName(fromInternalClass);
                     String toFullyQualified = Utils.internalNameToFullyQualifiedName(toInternalClass);
 
-                    return new ActualDependency(from, to, toFullyQualified);
+                    return new ActualDependency(from, to, fromFullyQualified, toFullyQualified);
                 })
                 .filter(a -> a.getFrom() != null && a.getTo() != null && a.getFrom() != a.getTo().getComponent());
     }

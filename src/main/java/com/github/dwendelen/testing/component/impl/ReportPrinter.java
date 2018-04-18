@@ -69,8 +69,9 @@ public class ReportPrinter {
         print(unexpectedDependency, report.getUnexpectedDependencies(), dep ->
                 "Unexpected dependency " +
                         "from \"" + dep.getFrom() + "\" " +
-                        "to \"" + dep.getTo() + "\" " +
-                        "via " + dep.getClassName()
+                        "to \"" + dep.getTo() + "\": " +
+                        "from " + dep.getClassNameFrom() + " " +
+                        "to " + dep.getClassNameTo()
         );
         print(unusedDependency, report.getUnusedDependencies(), dep ->
                 "Unused dependency " +
@@ -80,9 +81,10 @@ public class ReportPrinter {
 
         print(noAccess, report.getNoAccess(), dep ->
                 "No access " +
-                        "from \"" + dep.getFrom() + "\" " +
-                        "to " + dep.getClassName() + " " +
-                        "in module \"" + dep.getTo() + "\" "
+                        "from " + dep.getFrom() + "\" " +
+                        "to \"" + dep.getTo() + "\": " +
+                        "from " + dep.getClassNameFrom() + " " +
+                        "to " + dep.getClassNameTo()
         );
     }
 
@@ -115,9 +117,9 @@ public class ReportPrinter {
 
     private String getPrefix(Level level) {
         if (level == Level.WARNING) {
-            return "WARNING";
+            return "WARNING ";
         } else if (level == Level.SEVERE) {
-            return "ERROR  ";
+            return "ERROR   ";
         } else {
             return "";
         }

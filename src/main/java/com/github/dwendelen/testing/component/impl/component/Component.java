@@ -48,7 +48,7 @@ public class Component {
     public Report analyse(Observable<ActualDependency> actualDependencies) {
         Observable<UnexpectedDependency> unexpectedDependencies = actualDependencies
                 .filter(d -> !expectedDependencies.contains(d.getTo().getComponent()))
-                .map(d -> new UnexpectedDependency(this, d.getTo().getComponent(), d.getClassName()));
+                .map(d -> new UnexpectedDependency(this, d.getTo().getComponent(), d.getClassNameFrom(), d.getClassNameTo()));
 
         Observable<UnusedDepedency> unusedDependencies = actualDependencies
                 .reduce(new TreeSet<>(expectedDependencies), (unused, dep) -> {
@@ -61,7 +61,7 @@ public class Component {
 
         Observable<NoAccess> noAccess = actualDependencies
                 .filter(dep -> !dep.getTo().isAccessibleFrom(this))
-                .map(dep -> new NoAccess(this, dep.getTo().getComponent(), dep.getClassName()));
+                .map(dep -> new NoAccess(this, dep.getTo().getComponent(), dep.getClassNameFrom(), dep.getClassNameTo()));
 
         return new Report(unexpectedDependencies, unusedDependencies, noAccess, null);
     }
