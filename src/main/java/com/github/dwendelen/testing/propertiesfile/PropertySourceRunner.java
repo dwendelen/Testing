@@ -24,6 +24,8 @@ import org.junit.runners.model.Statement;
 import org.springframework.core.io.support.ResourcePropertySource;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -40,8 +42,46 @@ public class PropertySourceRunner extends BlockJUnit4ClassRunner {
     }
 
     @Override
+    protected List<FrameworkMethod> computeTestMethods() {
+        List<FrameworkMethod> testAnnotatedMethods = getTestClass().getAnnotatedMethods(Test.class);
+        List<FrameworkMethod> testMethods = new ArrayList<>(testAnnotatedMethods);
+
+        if(!testMethods.isEmpty()) {
+            System.err.println("WARNING: tests found that are annotated with @Test, please change them to @PropertyTest");
+        }
+
+        List<FrameworkMethod> propertyTestAnnotated = getTestClass().getAnnotatedMethods(PropertyTest.class);
+        for (FrameworkMethod frameworkMethod : propertyTestAnnotated) {
+            PropertyTest annotation = frameworkMethod.getAnnotation(PropertyTest.class);
+
+            if(annotation.runOnlyFor().length != 0 && annotation.doNotRunFor().length != 0) {
+                System.err.println("WARNING: both runOnlyFor and doNotRunFor are set. The behaviour is undefined for this configuration");
+            }
+
+            if(annotation.runOnlyFor().length != 0) {
+                //White list mode
+                if (Arrays.asList(annotation.runOnlyFor()).contains(propertySourceName)) {
+                    testMethods.add(frameworkMethod);
+                }
+            } else {
+                //Black list mode
+                if(!Arrays.asList(annotation.doNotRunFor()).contains(propertySourceName)) {
+                    testMethods.add(frameworkMethod);
+                }
+            }
+        }
+
+        return testMethods;
+    }
+
+    @Override
     protected void validateTestMethods(List<Throwable> errors) {
-        List<FrameworkMethod> methods = getTestClass().getAnnotatedMethods(Test.class);
+        List<FrameworkMethod> testMethods = getTestClass().getAnnotatedMethods(Test.class);
+        List<FrameworkMethod> propertyTestMethods = getTestClass().getAnnotatedMethods(PropertyTest.class);
+
+        List<FrameworkMethod> methods = new ArrayList<>();
+        methods.addAll(testMethods);
+        methods.addAll(propertyTestMethods);
 
         for (FrameworkMethod eachTestMethod : methods) {
             eachTestMethod.validatePublicVoid(false, errors);
@@ -75,6 +115,7 @@ public class PropertySourceRunner extends BlockJUnit4ClassRunner {
                 if (propertySource.containsProperty(key)) {
                     parameterInstances[i] = propertySource.getProperty(key);
                     found = true;
+                    break; //This break is important to avoid overwrite from backup properties file
                 }
             }
 

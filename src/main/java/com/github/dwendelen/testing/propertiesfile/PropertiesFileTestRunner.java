@@ -43,7 +43,7 @@ public class PropertiesFileTestRunner extends Suite {
         runners = new ArrayList<>();
         for (final Resource resource : getPropertySources(annotation.filePattern(), annotation.excludeFilesStartingWith())) {
             final List<ResourcePropertySource> propertySources = mapToSource(resource);
-            propertySources.addAll(sourcesToMerge);
+            propertySources.addAll(sourcesToMerge); //It is important that this comes last
             runners.add(new PropertySourceRunner(klass, propertySources, resource.getFilename()));
             runners.add(new ExpectedPropertiesRunner(klass, propertySources, resource.getFilename(), annotation.expectedProperties()));
         }
