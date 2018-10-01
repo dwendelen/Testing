@@ -23,12 +23,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface PropertiesFileTest {
-    String EXCLUDE_FILES_STARTING_WITH_DEFAULT_VALUE = "";
     String NO_MERGE = "";
 
     String filePattern();
 
-    String excludeFilesStartingWith() default EXCLUDE_FILES_STARTING_WITH_DEFAULT_VALUE;
+    String[] excludeFilesStartingWith() default {};
     String mergeWith() default NO_MERGE;
     String[] expectedProperties() default {};
 }

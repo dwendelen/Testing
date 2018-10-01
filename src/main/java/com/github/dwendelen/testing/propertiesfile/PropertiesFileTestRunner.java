@@ -54,20 +54,20 @@ public class PropertiesFileTestRunner extends Suite {
         return runners;
     }
 
-    private List<Resource> getPropertySources(String pattern, String exclude) {
+    private List<Resource> getPropertySources(String pattern, String[] excludes) {
         try {
             PathMatchingResourcePatternResolver resourceProvider = new PathMatchingResourcePatternResolver();
             Resource[] resources = resourceProvider.getResources(pattern);
-            return filterExcludedResources(resources, exclude);
+            return filterExcludedResources(resources, excludes);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private List<Resource> filterExcludedResources(Resource[] resources, String exclude) {
+    private List<Resource> filterExcludedResources(Resource[] resources, String[] excludes) {
         List<Resource> filteredList = new ArrayList<>();
         for (Resource resource : resources) {
-            if(fileNameIsExcluded(resource.getFilename(), exclude)) {
+            if(fileNameIsExcluded(resource.getFilename(), excludes)) {
                 continue;
             }
 
@@ -76,12 +76,14 @@ public class PropertiesFileTestRunner extends Suite {
         return filteredList;
     }
 
-    private boolean fileNameIsExcluded(String filename, String exclude) {
-        if (PropertiesFileTest.EXCLUDE_FILES_STARTING_WITH_DEFAULT_VALUE.equals(exclude)) {
-            return false;
+    private boolean fileNameIsExcluded(String filename, String[] excludes) {
+        for (String exclude : excludes) {
+            if(filename.startsWith(exclude)) {
+                return true;
+            }
         }
 
-        return filename.startsWith(exclude);
+        return false;
     }
 
     private List<ResourcePropertySource> mapToSource(Resource resource) {
