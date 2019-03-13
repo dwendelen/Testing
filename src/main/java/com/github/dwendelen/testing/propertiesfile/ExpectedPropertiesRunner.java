@@ -20,18 +20,18 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.ParentRunner;
 import org.junit.runners.model.InitializationError;
-import org.springframework.core.io.support.ResourcePropertySource;
+import org.springframework.core.env.MapPropertySource;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class ExpectedPropertiesRunner extends ParentRunner<String> {
-    private List<ResourcePropertySource> propertySources;
+    private List<MapPropertySource> propertySources;
     private String propertySourceName;
     private String[] expectedAnnotations;
 
 
-    public ExpectedPropertiesRunner(Class<?> klass, List<ResourcePropertySource> propertySources, String propertySourceName, String[] expectedAnnotations) throws InitializationError {
+    public ExpectedPropertiesRunner(Class<?> klass, List<MapPropertySource> propertySources, String propertySourceName, String[] expectedAnnotations) throws InitializationError {
         super(klass);
         this.propertySources = propertySources;
         this.propertySourceName = propertySourceName;
@@ -54,7 +54,7 @@ public class ExpectedPropertiesRunner extends ParentRunner<String> {
     protected void runChild(String key, RunNotifier notifier) {
         final Description description = describeChild(key);
         notifier.fireTestStarted(description);
-        for (ResourcePropertySource propertySource : propertySources) {
+        for (MapPropertySource propertySource : propertySources) {
             if (propertySource.containsProperty(key)) {
                 notifier.fireTestFinished(description);
                 return;

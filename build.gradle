@@ -6,7 +6,7 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 group 'com.github.dwendelen'
-version '11'
+version '12'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -41,8 +41,12 @@ publishing {
     }
     repositories {
         maven {
-            name = 'healthcare-releases'
-            url = 'http://nexus.cegeka.be/nexus/content/repositories/healthcare-releases'
+            name = 'viollier-releases'
+            url = 'http://valartifactorydev01:8081/artifactory/build-dependencies'
+        }
+        maven {
+            name = 'viollier-snapshots'
+            url = 'http://valartifactorydev01:8081/artifactory/build-dependencies-snapshots'
         }
     }
 }

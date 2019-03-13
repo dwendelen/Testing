@@ -21,7 +21,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
-import org.springframework.core.io.support.ResourcePropertySource;
+import org.springframework.core.env.MapPropertySource;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -32,10 +32,10 @@ import java.util.List;
  * Do not use with @RunWith(...)
  */
 public class PropertySourceRunner extends BlockJUnit4ClassRunner {
-    private List<ResourcePropertySource> propertySources;
+    private List<MapPropertySource> propertySources;
     private String propertySourceName;
 
-    public PropertySourceRunner(Class<?> klass, List<ResourcePropertySource> propertySources, String propertySourceName) throws InitializationError {
+    public PropertySourceRunner(Class<?> klass, List<MapPropertySource> propertySources, String propertySourceName) throws InitializationError {
         super(klass);
         this.propertySources = propertySources;
         this.propertySourceName = propertySourceName;
@@ -111,7 +111,7 @@ public class PropertySourceRunner extends BlockJUnit4ClassRunner {
 
             String key = annotation.value();
             boolean found = false;
-            for (ResourcePropertySource propertySource : propertySources) {
+            for (MapPropertySource propertySource : propertySources) {
                 if (propertySource.containsProperty(key)) {
                     parameterInstances[i] = propertySource.getProperty(key);
                     found = true;

@@ -18,6 +18,9 @@ package com.github.dwendelen.testing.propertiesfile;
 import org.junit.runner.Runner;
 import org.junit.runners.Suite;
 import org.junit.runners.model.InitializationError;
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -38,11 +41,11 @@ public class PropertiesFileTestRunner extends Suite {
             throw new InitializationError("No @PropertyFileTest");
         }
 
-        List<ResourcePropertySource> sourcesToMerge = getMergeSources(annotation.mergeWith());
+        List<MapPropertySource> sourcesToMerge = getMergeSources(annotation.mergeWith());
 
         runners = new ArrayList<>();
         for (final Resource resource : getPropertySources(annotation.filePattern(), annotation.excludeFilesStartingWith())) {
-            final List<ResourcePropertySource> propertySources = mapToSource(resource);
+            final List<MapPropertySource> propertySources = mapToSource(resource);
             propertySources.addAll(sourcesToMerge); //It is important that this comes last
             runners.add(new PropertySourceRunner(klass, propertySources, resource.getFilename()));
             runners.add(new ExpectedPropertiesRunner(klass, propertySources, resource.getFilename(), annotation.expectedProperties()));
@@ -86,18 +89,31 @@ public class PropertiesFileTestRunner extends Suite {
         return false;
     }
 
-    private List<ResourcePropertySource> mapToSource(Resource resource) {
-        try {
-            ResourcePropertySource resourcePropertySource = new ResourcePropertySource(resource);
-            List<ResourcePropertySource> propertySources = new ArrayList<>();
-            propertySources.add(resourcePropertySource);
-            return propertySources;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    private List<MapPropertySource> mapToSource(Resource resource) {
+        List<MapPropertySource> propertySources = new ArrayList<>();
+
+        if(resource.getFilename().endsWith(".yml") || resource.getFilename().endsWith(".yaml")) {
+            YamlPropertiesFactoryBean factoryBean = new YamlPropertiesFactoryBean();
+            factoryBean.setResources(resource);
+            factoryBean.afterPropertiesSet();
+
+            PropertiesPropertySource propertiesPropertySource = new PropertiesPropertySource(resource.getFilename(), factoryBean.getObject());
+            propertySources.add(propertiesPropertySource);
+
+        } else {
+            try {
+                ResourcePropertySource resourcePropertySource = new ResourcePropertySource(resource);
+
+                propertySources.add(resourcePropertySource);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
+
+        return propertySources;
     }
 
-    private List<ResourcePropertySource> getMergeSources(String stringPath) {
+    private List<MapPropertySource> getMergeSources(String stringPath) {
         if(StringUtils.isEmpty(stringPath)) {
             return new ArrayList<>();
         }
